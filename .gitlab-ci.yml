@@ -4,19 +4,13 @@ before_script:
   - pip install -r requirements.txt
 
 stages:
-  - flake
   - build
-
-flake8:
-  stage: flake
-  image: python:3.6
-  script:
-    - flake8
 
 build35:
   stage: build
   image: python:3.6
   script:
+    - flake8
     - make all-clean
     - make test
   artifacts:
@@ -28,6 +22,7 @@ build36:
   stage: build
   image: python:3.6
   script:
+    - flake8
     - make all-clean
     - make test
   artifacts:
@@ -39,6 +34,7 @@ build37:
   stage: build
   image: python:3.7
   script:
+    - flake8
     - make all-clean
     - make test
   artifacts:
@@ -50,6 +46,7 @@ build38:
   stage: build
   image: python:3.8
   script:
+    - flake8
     - make all-clean
     - make test
   artifacts:
