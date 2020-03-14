@@ -5,23 +5,10 @@ before_script:
   - pip install -r requirements.txt
 
 stages:
-  - build34
   - build35
   - build36
   - build37
   - build38
-
-build34:
-  stage: build34
-  image: python:3.4
-  script:
-    - flake8
-    - make all-clean
-    - make test
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 1 week
 
 build35:
   stage: build35
