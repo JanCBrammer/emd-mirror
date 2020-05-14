@@ -1563,8 +1563,8 @@ def get_config(siftname='sift'):
     out['imf_opts'] = imf_opts
     out['envelope_opts'] = envelope_opts
     out['extrema_opts'] = extrema_opts
-    out['extrema_opts/mag_pad'] = mag_pad_opts
-    out['extrema_opts/loc_pad'] = loc_pad_opts
+    out['extrema_opts/mag_pad_opts'] = mag_pad_opts
+    out['extrema_opts/loc_pad_opts'] = loc_pad_opts
 
     return out
 
