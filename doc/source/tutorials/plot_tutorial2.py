@@ -10,10 +10,9 @@ all the way down to extrema detection.
 #%%
 # Lets make a simulated signal to get started.
 
-import yaml
+import emd
 import numpy as np
 import matplotlib.pyplot as plt
-import emd
 
 sample_rate = 1000
 seconds = 10
@@ -67,14 +66,14 @@ print(config)
 # The SiftConfig dictionary is nested, in that some items in the dictionary
 # store further dictionaries of options. This hierarchy of options reflects
 # where the options are used in the sift process. The top-level of the
-# dictionary contains arguements which may be passed directly to the sift
+# dictionary contains arguments which may be passed directly to the sift
 # functions, whilst options needed for internal function calls are stored in
 # nested subdictionaries.
 #
 # The parameters in the config can be changed in the same way we would change
 # the key-value pairs in a nested dictionary or using a h5py inspiried shorthand.
 
-# This is a top-level arguemnt used directly by ensemble_sift
+# This is a top-level argument used directly by ensemble_sift
 config['nensembles'] = 24
 
 # This is a sub-arguemnt used by interp_envelope, which is called within

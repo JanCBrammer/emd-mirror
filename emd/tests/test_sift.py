@@ -149,14 +149,14 @@ class test_sift_config(unittest.TestCase):
         # Check a couple of options
         assert(conf['max_imfs'] is None)
         assert(conf['extrema_opts/pad_width'] == 2)
-        assert(conf['extrema_opts/loc_pad/mode'] == 'reflect')
+        assert(conf['extrema_opts/loc_pad_opts/mode'] == 'reflect')
 
         # Get ensemble sift config
         conf = get_config('ensemble_sift')
         # Check a couple of options
         assert(conf['max_imfs'] is None)
         assert(conf['extrema_opts/pad_width'] == 2)
-        assert(conf['extrema_opts/loc_pad/mode'] == 'reflect')
+        assert(conf['extrema_opts/loc_pad_opts/mode'] == 'reflect')
 
         # Get mask sift config
         conf = get_config('ensemble_sift')
@@ -164,4 +164,4 @@ class test_sift_config(unittest.TestCase):
         assert(conf['nensembles'] == 4)
         assert(conf['max_imfs'] is None)
         assert(conf['extrema_opts/pad_width'] == 2)
-        assert(conf['extrema_opts/loc_pad/mode'] == 'reflect')
+        assert(conf['extrema_opts/loc_pad_opts/mode'] == 'reflect')
