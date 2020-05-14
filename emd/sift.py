@@ -93,7 +93,7 @@ def get_next_imf(X, sd_thresh=.1, env_step_size=1, envelope_opts={}, extrema_opt
         if upper is None or lower is None:
             continue_flag = False
             continue_imf = False
-            logger.debug('Finishing sift: IMF has no extrema'.format(niters))
+            logger.debug('Finishing sift: IMF has no extrema')
             continue
 
         # Find local mean
