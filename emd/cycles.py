@@ -124,11 +124,16 @@ def phase_align(ip, x, cycles=None, npoints=48, interp_kind='linear'):
         array containing the phase aligned observations
 
     """
+    logger.info('STARTED: phase-align cycles')
 
     phase_edges, phase_bins = spectra.define_hist_bins(0, 2 * np.pi, npoints)
 
     if cycles is None:
         cycles = get_cycle_inds(ip)
+
+    logger.debug('aligning {0} cycles over {1} phase points with {2} interpolation'.format(cycles.max(),
+                                                                                           npoints,
+                                                                                           interp_kind))
 
     ncycles = cycles.max()
     avg = np.zeros((npoints, ncycles))
@@ -142,6 +147,7 @@ def phase_align(ip, x, cycles=None, npoints=48, interp_kind='linear'):
 
         avg[:, ii - 1] = f(phase_bins)
 
+    logger.info('COMPLETED: phase-align cycles')
     return avg
 
 
