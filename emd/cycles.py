@@ -309,6 +309,10 @@ def get_cycle_stat(cycles, values, mode='compressed', func=np.mean):
          Flag to indicate whether to return a single value per cycle or the
          average values filled within a vector of the same size as values
          (Default value = 'compressed')
+    func : function
+        Function to call on the data in values for each cycle (Default
+        np.mean). This can be any function, built-in or user defined, that
+        processes a single vector of data returning a single value.
 
     Returns
     -------
@@ -339,7 +343,7 @@ def get_cycle_stat(cycles, values, mode='compressed', func=np.mean):
             out[cycles == cind] = stat
 
     # Currently including the first value as the stat for 'non-cycles' in
-    # compressed mode for backwards compatibilty with earlier work, might be
+    # compressed mode for backwards compatibility with earlier work, might be
     # confusing overall - should probably rethink this whether this makes any
     # sense
     if mode == 'compressed':
