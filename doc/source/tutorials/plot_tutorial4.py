@@ -41,13 +41,13 @@ plt.plot(t[:sample_rate*3], x[:sample_rate*3], 'k')
 imf = emd.sift.mask_sift(x)
 
 # Visualise the IMFs
-emd.plotting.plot_imfs(imf[:sample_rate*4,:],cmap=True,scale_y=True)
+emd.plotting.plot_imfs(imf[:sample_rate*4, :], cmap=True, scale_y=True)
 
 
 #%%
 # Next, we want to identify single cycles of any oscillations that are present
 # in our IMFs. There are many ways to do this depending on the  signal and
-# signal-features of interest. The EMD pacakge provides a method which extract
+# signal-features of interest. The EMD package provides a method which extract
 # cycle locations based on the instantaneous phase of an IMF. In its simplest
 # form this will detect successive cycles within the IMF, though we can also
 # run some additional checks to reject 'bad' cycles or specify time-periods to
@@ -68,7 +68,7 @@ emd.plotting.plot_imfs(imf[:sample_rate*4,:],cmap=True,scale_y=True)
 # this later, for now we will run the function to get ``all_cycles``.
 
 # Compute frequency domain features using the normalised-Hilbert transform
-IP,IF,IA = emd.spectra.frequency_stats( imf, sample_rate ,'nht' )
+IP, IF, IA = emd.spectra.frequency_stats(imf, sample_rate, 'nht')
 
 # Extract cycle locations
 all_cycles = emd.cycles.get_cycle_inds(IP, return_good=False)
@@ -82,7 +82,7 @@ print('Input all_cycles shape is - {0}'.format(all_cycles.shape))
 
 #%%
 # For each IMF, ``all_cycles`` stores either a zero or an integer greater than
-# zero for each time sample. A value zero indicates that no  cycle is occuring
+# zero for each time sample. A value zero indicates that no  cycle is occurring
 # at that time (perhaps as it has been excluded by our cycle quality checks in
 # the next section) whilst a non-zero value indicates that that time-sample
 # belongs to a specific cycle.
@@ -91,22 +91,22 @@ print('Input all_cycles shape is - {0}'.format(all_cycles.shape))
 # resets between cycles.  The default threshold for a jump is 1.5*pi. Let's
 # take a look at this in IMF-2
 
-plt.figure(figsize=(8,6))
+plt.figure(figsize=(8, 6))
 plt.subplots_adjust(hspace=0.3)
 plt.subplot(311)
-plt.plot(t[:sample_rate*2], imf[:sample_rate*2,2])
+plt.plot(t[:sample_rate*2], imf[:sample_rate*2, 2])
 plt.gca().set_xticklabels([])
 plt.title('IMF-2')
 plt.subplot(312)
-plt.plot(t[:sample_rate*2], IP[:sample_rate*2,2])
+plt.plot(t[:sample_rate*2], IP[:sample_rate*2, 2])
 plt.title('IMF-2 Instantaneous Phase')
 plt.gca().set_xticklabels([])
 plt.subplot(313)
-plt.plot(t[1:sample_rate*2], np.abs(np.diff(IP[:sample_rate*2,2])))
-plt.plot((0,2),(1.5*np.pi,1.5*np.pi),'k:')
+plt.plot(t[1:sample_rate*2], np.abs(np.diff(IP[:sample_rate*2, 2])))
+plt.plot((0, 2), (1.5*np.pi, 1.5*np.pi), 'k:')
 plt.xlabel('Time (seconds)')
 plt.title('IMF-2 Instantaneous Phase Abs-Differential')
-plt.legend(['IMF-2 IP Differential','Jump threshold'],loc='upper right')
+plt.legend(['IMF-2 IP Differential', 'Jump threshold'], loc='upper right')
 
 #%%
 # We can see that the large phase jumps occur at the ascending zero-crossing of
@@ -132,18 +132,18 @@ plt.legend(['IMF-2 IP Differential','Jump threshold'],loc='upper right')
 # Lets take a look at these checks in IMF-2. Firstly, we run test 1:
 
 # We use the unwrapped phased so we don't have to worry about jumps between cycles
-unwrapped_phase = np.diff(np.unwrap(IP[:sample_rate*2,2]))
+unwrapped_phase = np.diff(np.unwrap(IP[:sample_rate*2, 2]))
 
 # Plot the differential of the unwrapped phasee
-plt.figure(figsize=(8,4))
+plt.figure(figsize=(8, 4))
 plt.subplot(211)
-plt.plot(t[:sample_rate*2], IP[:sample_rate*2,2])
+plt.plot(t[:sample_rate*2], IP[:sample_rate*2, 2])
 plt.legend(['IMF-2 Instantaneous Phase'])
 plt.title('Test-1: Check phase is strictly increasing')
 plt.subplot(212)
 plt.plot(t[1:sample_rate*2], unwrapped_phase)
-plt.plot((0,2),(0,0),'k:')
-plt.ylim(-.2,.4)
+plt.plot((0, 2), (0, 0), 'k:')
+plt.ylim(-.2, .4)
 plt.legend(['IMF-2 Instantaneous Phase Differential'])
 
 #%%
@@ -153,18 +153,18 @@ plt.legend(['IMF-2 Instantaneous Phase Differential'])
 #
 # The second test looks to make sure that each cycles phase covers the whole
 # 2pi range. If the phase  doesn't reach these limits it indicates that a phase
-# jump occured early or late in the cycle (for instance we might have a peak
+# jump occurred early or late in the cycle (for instance we might have a peak
 # which is below zero in the raw time-course) leaving an incomplete
 # oscillation.
 
-plt.figure(figsize=(8,4))
+plt.figure(figsize=(8, 4))
 plt.title('Tests 2+3: Check phase covers the full 2pi range')
-plt.plot(t[:sample_rate*2], IP[:sample_rate*2,2],label='IP')
-plt.plot((0,2),(0,0),label='0')
-plt.plot((0,2),(np.pi*2,np.pi*2),label='2pi')
+plt.plot(t[:sample_rate*2], IP[:sample_rate*2, 2], label='IP')
+plt.plot((0, 2), (0, 0), label='0')
+plt.plot((0, 2), (np.pi*2, np.pi*2), label='2pi')
 
-plt.plot((0,2),(np.pi*2-np.pi/12,np.pi*2-np.pi/12),':',label='Upper Thresh')
-plt.plot((0,2),(np.pi/12,np.pi/12),':',label='Lower Thresh')
+plt.plot((0, 2), (np.pi*2-np.pi/12, np.pi*2-np.pi/12), ':', label='Upper Thresh')
+plt.plot((0, 2), (np.pi/12, np.pi/12), ':', label='Lower Thresh')
 plt.legend()
 
 #%%
@@ -178,43 +178,11 @@ plt.legend()
 # and descending zero-crossing. These can be computed from the IMF and a cycles
 # vector using ``emd.cycles.get_control_points``
 
-def get_control_points(x, good_cycles ):
-    from emd import sift
-    ctrl = list()
-    for ii in range(1, good_cycles.max() + 1):
-        cycle = x[good_cycles == ii]
-        duplicates = False
-
-        # Peak
-        pk = sift.find_extrema(cycle)[0]
-        asc = np.where(np.diff(np.sign(cycle)) == -2)[0]
-        tr = sift.find_extrema(-cycle)[0]
-
-        if len(pk) == 1:
-            pk = pk[0]
-        else:
-            pk = np.nan
-
-        if len(tr) == 1:
-            tr = tr[0]
-        else:
-            tr = np.nan
-
-        if len(asc) == 1:
-            asc = asc[0]
-        else:
-            asc = np.nan
-
-        ctrl.append((0,pk,asc,tr,len(cycle)-1))
-
-    return np.array(ctrl)
-
-
-ctrl = get_control_points(imf[:,2],all_cycles[:,2])
+ctrl = emd.cycles.get_control_points(imf[:, 2], all_cycles[:, 2])
 
 # Define some marker styles and legend labels for the control points.
-markers = ['og','^b','oc','vb','or']
-label = ['Asc-Start','Peak','Desc','Trough','Asc-End']
+markers = ['og', '^b', 'oc', 'vb', 'or']
+label = ['Asc-Start', 'Peak', 'Desc', 'Trough', 'Asc-End']
 
 # Plot the first 10 cycles with control points
 ncycles = 20
@@ -223,13 +191,13 @@ start = 0
 plt.figure()
 plt.plot(111)
 plt.title('Test 4: Control points')
-for ii in range(1,ncycles):
-    print('Cycle {0:2d} - {1}'.format(ii,ctrl[ii,:]))
-    cycle = imf[all_cycles[:,2]==ii+1,2]
-    plt.plot( np.arange(len(cycle))+start, cycle, 'k', label='Cycle')
+for ii in range(1, ncycles):
+    print('Cycle {0:2d} - {1}'.format(ii, ctrl[ii, :]))
+    cycle = imf[all_cycles[:, 2] == ii + 1, 2]
+    plt.plot(np.arange(len(cycle))+start, cycle, 'k', label='Cycle')
     for jj in range(5):
-        if np.isfinite( ctrl[ii,jj]):
-            plt.plot( ctrl[ii,jj]+start, cycle[int(ctrl[ii,jj])],markers[jj],label=label[jj])
+        if np.isfinite(ctrl[ii, jj]):
+            plt.plot(ctrl[ii, jj]+start, cycle[int(ctrl[ii, jj])], markers[jj], label=label[jj])
     start += len(cycle)
 
     # Only plot the legend for the first cycle
@@ -254,19 +222,19 @@ good_cycles = emd.cycles.get_cycle_inds(IP, return_good=True, phase_step=np.pi)
 plt.figure(figsize=(10, 8))
 plt.subplots_adjust(hspace=.3)
 plt.subplot(311)
-plt.plot(t[:sample_rate*4], imf[:sample_rate*4,2], 'k')
+plt.plot(t[:sample_rate*4], imf[:sample_rate*4, 2], 'k')
 plt.gca().set_xticklabels([])
 plt.title('IMF-2')
 plt.subplot(312)
-plt.plot(t[:sample_rate*4], IP[:sample_rate*4,2], 'b')
+plt.plot(t[:sample_rate*4], IP[:sample_rate*4, 2], 'b')
 plt.gca().set_xticklabels([])
-plt.plot((0,4),(0,0),label='0')
-plt.plot((0,4),(np.pi*2,np.pi*2),label='2pi')
-plt.plot((0,4),(np.pi*2-np.pi/12,np.pi*2-np.pi/12),':',label='Upper Thresh')
-plt.plot((0,4),(np.pi/12,np.pi/12),':',label='Lower Thresh')
+plt.plot((0, 4), (0, 0), label='0')
+plt.plot((0, 4), (np.pi*2, np.pi*2), label='2pi')
+plt.plot((0, 4), (np.pi*2-np.pi/12, np.pi*2-np.pi/12), ':', label='Upper Thresh')
+plt.plot((0, 4), (np.pi/12, np.pi/12), ':', label='Lower Thresh')
 plt.title('Instantanous Phase')
 plt.subplot(313)
-plt.plot(t[:sample_rate*4], good_cycles[:sample_rate*4,2])
+plt.plot(t[:sample_rate*4], good_cycles[:sample_rate*4, 2])
 plt.title('Good cycles')
 plt.xlabel('Time (seconds)')
 
@@ -283,9 +251,9 @@ plt.xlabel('Time (seconds)')
 # identified in each IMF
 
 for ii in range(all_cycles.shape[1]):
-    all_count = all_cycles[:,ii].max()
-    good_count = good_cycles[:,ii].max()
-    percent = np.round(100*(good_count/all_count),1)
+    all_count = all_cycles[:, ii].max()
+    good_count = good_cycles[:, ii].max()
+    percent = np.round(100*(good_count/all_count), 1)
     print('IMF-{0} contains {1:3d} cycles of which {2:3d} ({3}%) are good'.format(ii,
                                                                                   all_count,
                                                                                   good_count,
@@ -313,23 +281,23 @@ for ii in range(all_cycles.shape[1]):
 plt.figure(figsize=(10, 8))
 plt.subplots_adjust(hspace=.3)
 plt.subplot(311)
-plt.plot(t[:sample_rate//2], imf[:sample_rate//2,0], 'k')
+plt.plot(t[:sample_rate//2], imf[:sample_rate//2, 0], 'k')
 plt.gca().set_xticklabels([])
 plt.title('IMF-0')
 
 plt.subplot(312)
-plt.plot(t[:sample_rate//2], IP[:sample_rate//2,0], 'b')
+plt.plot(t[:sample_rate//2], IP[:sample_rate//2, 0], 'b')
 
-plt.plot((0,.5),(0,0),label='0')
-plt.plot((0,.5),(np.pi*2,np.pi*2),label='2pi')
-plt.plot((0,.5),(np.pi*2-np.pi/12,np.pi*2-np.pi/12),':',label='Upper Thresh')
-plt.plot((0,.5),(np.pi/12,np.pi/12),':',label='Lower Thresh')
+plt.plot((0, .5), (0, 0), label='0')
+plt.plot((0, .5), (np.pi*2, np.pi*2), label='2pi')
+plt.plot((0, .5), (np.pi*2-np.pi/12, np.pi*2-np.pi/12), ':', label='Upper Thresh')
+plt.plot((0, .5), (np.pi/12, np.pi/12), ':', label='Lower Thresh')
 
 plt.gca().set_xticklabels([])
 plt.title('Instantanous Phase')
 
 plt.subplot(313)
-plt.plot(t[:sample_rate//2], good_cycles[:sample_rate//2,0])
+plt.plot(t[:sample_rate//2], good_cycles[:sample_rate//2, 0])
 plt.title('Good cycles')
 plt.xlabel('Time (seconds)')
 
@@ -339,5 +307,3 @@ plt.xlabel('Time (seconds)')
 # more cycles are showing distortions and failing the quality checks. In this
 # case it is ok as there is no signal in IMF-1 in our simulation. Much of IMF-1
 # is noisy
-
-

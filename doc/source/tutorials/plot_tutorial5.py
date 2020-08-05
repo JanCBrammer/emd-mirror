@@ -13,13 +13,14 @@ Here we will use the 'cycle' submodule of EMD to identify and analyse individual
 import emd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import ndimage
 
 # Define and simulate a simple signal
 peak_freq = 12
 sample_rate = 512
 seconds = 10
 noise_std = .5
-x = emd.utils.ar_simulate(peak_freq, sample_rate, seconds, noise_std=noise_std, random_seed=42,r=.99)
+x = emd.utils.ar_simulate(peak_freq, sample_rate, seconds, noise_std=noise_std, random_seed=42, r=.99)
 t = np.linspace(0, seconds, seconds*sample_rate)
 
 # Plot the first 5 seconds of data
@@ -41,7 +42,7 @@ plt.plot(t[:sample_rate*4], x[:sample_rate*4], 'k')
 imf = emd.sift.mask_sift(x)
 
 # Visualise the IMFs
-emd.plotting.plot_imfs(imf[:sample_rate*4,:],cmap=True,scale_y=True)
+emd.plotting.plot_imfs(imf[:sample_rate*4, :], cmap=True, scale_y=True)
 
 
 #%%
@@ -50,7 +51,7 @@ emd.plotting.plot_imfs(imf[:sample_rate*4,:],cmap=True,scale_y=True)
 # 'good' cycles based on the cycle validation check from the previous tutorial.
 
 # Extract frequency information
-IP,IF,IA = emd.spectra.frequency_stats( imf, sample_rate ,'nht' )
+IP, IF, IA = emd.spectra.frequency_stats(imf, sample_rate, 'nht')
 
 # Extract cycle locations
 all_cycles = emd.cycles.get_cycle_inds(IP, return_good=False)
@@ -62,7 +63,7 @@ good_cycles = emd.cycles.get_cycle_inds(IP, return_good=True)
 # time-series should be included in the cycle detection. This could be useful
 # for several reasons, we can mask our sections of signal with artefacts, limit
 # cycle detection to a specific period during a task or limit cycle detection
-# to peroids where there is a high amplitude oscillation.
+# to periods where there is a high amplitude oscillation.
 #
 # Here we will apply a low apmlitude threshold to identify good cycles which
 # have amplitude values strictly above the 33th percentile of amplitude values
@@ -72,10 +73,10 @@ good_cycles = emd.cycles.get_cycle_inds(IP, return_good=True)
 # included, a cycle will be excluded if a single sample within it is masked
 # out.
 
-thresh = np.percentile(IA[:,2],33)
-mask = IA[:,2] > thresh
+thresh = np.percentile(IA[:, 2], 33)
+mask = IA[:, 2] > thresh
 
-mask_cycles = emd.cycles.get_cycle_inds(IP,return_good=True, mask=mask)
+mask_cycles = emd.cycles.get_cycle_inds(IP, return_good=True, mask=mask)
 
 #%%
 # We can compute a variety of metric from our cycles using the
@@ -101,14 +102,14 @@ mask_cycles = emd.cycles.get_cycle_inds(IP,return_good=True, mask=mask)
 # amplitude for all detected cycles in IMF-2 and returns the result in the
 # full-vector format.
 
-cycle_amp = emd.cycles.get_cycle_stat(all_cycles[:,2], IA[:,2], mode='full', func=np.max)
+cycle_amp = emd.cycles.get_cycle_stat(all_cycles[:, 2], IA[:, 2], mode='full', func=np.max)
 
 # Make a summary figure
 plt.figure(figsize=(10, 4))
-plt.plot(t[:sample_rate*4], imf[:sample_rate*4,2], 'k')
-plt.plot(t[:sample_rate*4], IA[:sample_rate*4,2], 'b')
+plt.plot(t[:sample_rate*4], imf[:sample_rate*4, 2], 'k')
+plt.plot(t[:sample_rate*4], IA[:sample_rate*4, 2], 'b')
 plt.plot(t[:sample_rate*4], cycle_amp[:sample_rate*4], 'r')
-plt.legend(['IMF-2','Instantaneous Amplitude','Cycle-max Amplitude'])
+plt.legend(['IMF-2', 'Instantaneous Amplitude', 'Cycle-max Amplitude'])
 
 #%%
 # We can see that the original IMF in black and its instantaneous amplitude in
@@ -119,22 +120,23 @@ plt.legend(['IMF-2','Instantaneous Amplitude','Cycle-max Amplitude'])
 # The next section computes the average instantaneous frequency within each
 # cycle, again returning the result in full format.
 
-cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:,2], IF[:,2], mode='full', func=np.mean)
+cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:, 2], IF[:, 2], mode='full', func=np.mean)
 
 # Make a summary figure
 plt.figure(figsize=(10, 4))
-plt.plot(t[:sample_rate*4], IF[:sample_rate*4,2], 'b')
+plt.plot(t[:sample_rate*4], IF[:sample_rate*4, 2], 'b')
 plt.plot(t[:sample_rate*4], cycle_freq[:sample_rate*4], 'r')
-plt.legend(['Instantaneous Frequency','Cycle-mean frequency'])
+plt.legend(['Instantaneous Frequency', 'Cycle-mean frequency'])
 
 #%%
 # We can get a nice visualisation of cycle-average frequency by overlaying the
 # full stat vector onto the Hilbert-Huang transform. This is similar to the
 # plot above but now we can see the signal amplitude values in the colour-scale
-# of the HHT (hotter colours show higher amplitudes). Here we plot the cycle-average frequency for cycles above our amplitude thresholdover the HHT
+# of the HHT (hotter colours show higher amplitudes). Here we plot the
+# cycle-average frequency for cycles above our amplitude thresholdover the HHT
 
 # Compute cycle freq using amplitude masked-cycle indices
-cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:,2], IF[:,2], mode='full', func=np.mean)
+cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:, 2], IF[:, 2], mode='full', func=np.mean)
 
 # Carrier frequency histogram definition
 edges, bins = emd.spectra.define_hist_bins(3, 25, 64, 'linear')
@@ -143,17 +145,16 @@ edges, bins = emd.spectra.define_hist_bins(3, 25, 64, 'linear')
 hht = emd.spectra.hilberthuang(IF, IA, edges, mode='amplitude')
 
 # Add a little smoothing to help visualisation
-from scipy import ndimage
-shht = ndimage.gaussian_filter(hht,1)
+shht = ndimage.gaussian_filter(hht, 1)
 
 # Make a summary plot
 plt.figure()
 plt.subplot(211)
-plt.plot(t[:sample_rate*4], imf[:sample_rate*4,2], 'k')
-plt.plot( (0,4),(thresh,thresh),'k:')
-plt.xlim(0,4)
+plt.plot(t[:sample_rate*4], imf[:sample_rate*4, 2], 'k')
+plt.plot((0, 4), (thresh, thresh), 'k:')
+plt.xlim(0, 4)
 plt.subplot(212)
-plt.pcolormesh(t[:sample_rate*4],edges,shht[:,:sample_rate*4], cmap='hot_r', vmin=0)
+plt.pcolormesh(t[:sample_rate*4], edges, shht[:, :sample_rate*4], cmap='hot_r', vmin=0)
 plt.plot(t[:sample_rate*4], cycle_freq[:sample_rate*4], 'k')
 
 #%%
@@ -172,21 +173,21 @@ plt.plot(t[:sample_rate*4], cycle_freq[:sample_rate*4], 'k')
 # amplitude and frequency.
 
 # Compute cycle average frequency for all cycles and masked cycles
-all_cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:,2], IF[:,2], mode='compressed', func=np.mean)[1:]
-mask_cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:,2], IF[:,2], mode='compressed', func=np.mean)[1:]
+all_cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:, 2], IF[:, 2], mode='compressed', func=np.mean)[1:]
+mask_cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:, 2], IF[:, 2], mode='compressed', func=np.mean)[1:]
 
 # Compute cycle freuquency range for all cycles and for masked cycles
-all_cycle_amp = emd.cycles.get_cycle_stat(all_cycles[:,2], IA[:,2], mode='compressed', func=np.mean)[1:]
-mask_cycle_amp = emd.cycles.get_cycle_stat(mask_cycles[:,2], IA[:,2], mode='compressed', func=np.mean)[1:]
+all_cycle_amp = emd.cycles.get_cycle_stat(all_cycles[:, 2], IA[:, 2], mode='compressed', func=np.mean)[1:]
+mask_cycle_amp = emd.cycles.get_cycle_stat(mask_cycles[:, 2], IA[:, 2], mode='compressed', func=np.mean)[1:]
 
 # Make a summary figures
 plt.figure()
-plt.plot(all_cycle_freq,all_cycle_amp,'o')
-plt.plot(mask_cycle_freq,mask_cycle_amp,'o')
+plt.plot(all_cycle_freq, all_cycle_amp, 'o')
+plt.plot(mask_cycle_freq, mask_cycle_amp, 'o')
 plt.xlabel('Cycle average frequency (Hz)')
 plt.ylabel('Cycle average amplitude')
-plt.plot( (9,22),(thresh,thresh),'k:')
-plt.legend(['All-cycles','Masked-cycles','Amp thresh'])
+plt.plot((9, 22), (thresh, thresh), 'k:')
+plt.legend(['All-cycles', 'Masked-cycles', 'Amp thresh'])
 
 #%%
 # We see that high amplitude cycles are closely clustered around 12Hz - the
@@ -220,24 +221,30 @@ plt.legend(['All-cycles','Masked-cycles','Amp thresh'])
 # separately and plot the results as a function of cycle average frequency
 
 # Compute cycle average frequency for all cycles and masked cycles
-all_cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:,2], IF[:,2], mode='compressed', func=np.mean)[1:]
-mask_cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:,2], IF[:,2], mode='compressed', func=np.mean)[1:]
+all_cycle_freq = emd.cycles.get_cycle_stat(all_cycles[:, 2], IF[:, 2], mode='compressed', func=np.mean)[1:]
+mask_cycle_freq = emd.cycles.get_cycle_stat(mask_cycles[:, 2], IF[:, 2], mode='compressed', func=np.mean)[1:]
+
 
 # Define a simple function to compute the range of a set of values
 def degree_nonlinearity(x):
     return np.std((x - x.mean()) / x.mean())
 
+
 # Compute cycle freuquency range for all cycles and for masked cycles
-all_cycle_freq_don = emd.cycles.get_cycle_stat(all_cycles[:,2], IF[:,2], mode='compressed', func=degree_nonlinearity)[1:]
-cycle_freq_don = emd.cycles.get_cycle_stat(mask_cycles[:,2], IF[:,2], mode='compressed', func=degree_nonlinearity)[1:]
+all_cycle_freq_don = emd.cycles.get_cycle_stat(all_cycles[:, 2], IF[:, 2],
+                                               mode='compressed',
+                                               func=degree_nonlinearity)[1:]
+cycle_freq_don = emd.cycles.get_cycle_stat(mask_cycles[:, 2], IF[:, 2],
+                                           mode='compressed',
+                                           func=degree_nonlinearity)[1:]
 
 # Make a summary figures
 plt.figure()
-plt.plot(all_cycle_freq,all_cycle_freq_don,'o')
-plt.plot(mask_cycle_freq,cycle_freq_don,'o')
+plt.plot(all_cycle_freq, all_cycle_freq_don, 'o')
+plt.plot(mask_cycle_freq, cycle_freq_don, 'o')
 plt.xlabel('Cycle average frequency (Hz)')
 plt.ylabel('Cycle IF don (Hz)')
-plt.legend(['All-cycles','Masked-cycles'])
+plt.legend(['All-cycles', 'Masked-cycles'])
 
 #%%
 # The majority of cycles with very high degree of non-linearity in this
@@ -254,33 +261,36 @@ plt.legend(['All-cycles','Masked-cycles'])
 # occur only within continuous periods of osillation rather than single cycles
 # occurring in noise.
 #
-# ``emd.cycles.get_cycle_chain`` takes a set of cycle indices (from the output of ``emd.cycles.get_cycle_inds`` and returns a list of continuous chains of cycles. Each item in the list is a list of the cycle indices for a single chain 
+# ``emd.cycles.get_cycle_chain`` takes a set of cycle indices (from the output
+# of ``emd.cycles.get_cycle_inds`` and returns a list of continuous chains of
+# cycles. Each item in the list is a list of the cycle indices for a single
+# chain
 
-chains = emd.cycles.get_cycle_chain(mask_cycles[:,2])
+chains = emd.cycles.get_cycle_chain(mask_cycles[:, 2])
 
-for ii,chn in enumerate(chains):
-    print('Chain {0:2d}: {1}'.format(ii,chn))
+for ii, chn in enumerate(chains):
+    print('Chain {0:2d}: {1}'.format(ii, chn))
 
 #%%
 # We can extract the indices of individual cycles within each chain. Here, we
 # plot each chain in colour over the top of the original signal
 
-plt.figure(figsize=(10,4))
-plt.plot(t,x,'k',linewidth=.5)
+plt.figure(figsize=(10, 4))
+plt.plot(t, x, 'k', linewidth=.5)
 
-for ii,chn in enumerate(chains):
+for ii, chn in enumerate(chains):
     # Find indices matching on the cycle inds for the current chain
-    inds = np.in1d(mask_cycles[:,2],chn)
-    plt.plot(t[inds],imf[inds,2],linewidth=2)
+    inds = np.in1d(mask_cycles[:, 2], chn)
+    plt.plot(t[inds], imf[inds, 2], linewidth=2)
 
-plt.xlim(0,3.5)
-plt.legend(['Signal','Chain1','Chain2','Chain3','Chain4'])
+plt.xlim(0, 3.5)
+plt.legend(['Signal', 'Chain1', 'Chain2', 'Chain3', 'Chain4'])
 
 #%%
 # We can specify a minimum length of chain with the ``min_chain`` argument.
 # Here, we restrict the detection to chains with at least three cycles.
 
-chains = emd.cycles.get_cycle_chain(mask_cycles[:,2],min_chain=3)
+chains = emd.cycles.get_cycle_chain(mask_cycles[:, 2], min_chain=3)
 
-for ii,chn in enumerate(chains):
-    print('Chain {0:2d}: {1}'.format(ii,chn))
+for ii, chn in enumerate(chains):
+    print('Chain {0:2d}: {1}'.format(ii, chn))
