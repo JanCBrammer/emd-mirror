@@ -1,6 +1,6 @@
 """
-Describing waveform shape with Instantaneous Frequency and phase-alignment
-==========================================================================
+Waveform shape & Instantaneous Frequency
+========================================
 Here we explore how the instantaneous frequency of a signal is related to its
 waveform shape and how we can directly compare waveform shapes using phase
 alignment
@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 #%%
 # Linear & Non-linear Systems
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#%%
 # In this tutorial, we're going to explore how the instaneous frequency of an
 # oscillatory signal can represent its waveform shape. To do this, we're going
 # create a sine-wave simulation and modulate by a linear and a non-linear
@@ -46,6 +48,8 @@ def nonlinear_system(x, K, eta=.43, power=2):
 #%%
 # A simple sine-wave
 #^^^^^^^^^^^^^^^^^^^
+
+#%%
 # We will first apply our linear and non-linear equations to a very simple
 # pure-tone oscillation. We define some values below and create a 10 second
 # signal which oscillates at 2Hz.
@@ -84,7 +88,7 @@ plt.legend(['Original', 'Linear', 'Non-linear'])
 # instantanous frequency.
 #
 # Firstly, we compute the EMD of the linear system using the ``emd.sift.sift`` with
-# default arguemnts.
+# default argumnts.
 
 # Compute EMD
 imf_linear = emd.sift.sift(x_linear)
@@ -97,7 +101,7 @@ emd.plotting.plot_imfs(imf_linear[:sample_rate*4, :], cmap=True, scale_y=True)
 # The oscillation is captured completed by the first component whilst the
 # second component contains a very small residual.
 #
-# Next we compute the EMD for the non-linear sytem
+# Next we compute the EMD for the non-linear system
 
 # Compute EMD
 imf_nonlinear = emd.sift.sift(x_nonlinear)
@@ -222,7 +226,7 @@ plt.ylim(0, 4)
 # signal, whilst the lowest instantaneous frequency values occur around the
 # trough. This reflects how quickly the oscillation is progressing at each
 # point in the cycle. The linear system progresses at a uniform rate throughout
-# each cycle and therefore has a contstant instantaneous frequency. In
+# each cycle and therefore has a constant instantaneous frequency. In
 # contrast, the sharp peaks and wide troughs of the non-linear signal can be
 # interpreted as the cycle processing more quickly and slowly at the peak and
 # trough respectively. The instantnaous frequency tracks this at the full
@@ -232,7 +236,9 @@ plt.ylim(0, 4)
 #%%
 # A dynamic oscillation with noise
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# Unfortunatly most signals are more complex than our sine-wave above! Here we
+
+#%%
+# Unfortunately most signals are more complex than our sine-wave above! Here we
 # apply the same analysis as above to a dynamic & noisy signal. The signal
 # dynamics make the signal more interesting but also introduce some challenges
 # for waveform shape analyses, we will explore what these are and how
@@ -265,7 +271,7 @@ emd.plotting.plot_imfs(imf_linear[:sample_rate*4, :], cmap=True, scale_y=True)
 
 #%%
 # The oscillation is isolated into IMF-3. The remaining IMFs comtain low
-# magnitude noise. Next we run the same on the non-linear sytem.
+# magnitude noise. Next we run the same on the non-linear system.
 
 # Compute IMFs
 imf_nonlinear = emd.sift.mask_sift(x_nonlinear)
@@ -310,7 +316,7 @@ plt.legend(['Linear System', 'Nonlinear System'])
 #%%
 # As with the simple sinusoidal signal in the first section. We see that the
 # non-sinsusoidal waveform introduced by the nonlinear sytemintroduces a
-# harmonic into Welch's Periodogram and widens the 12Hz peak of hte
+# harmonic into Welch's Periodogram and widens the 12Hz peak of the
 # Hilbert-Huang transform.
 #
 # We can plot the waveform and instantanous frequency alongside each other to
