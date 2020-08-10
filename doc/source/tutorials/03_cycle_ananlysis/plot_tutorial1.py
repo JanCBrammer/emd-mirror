@@ -122,12 +122,12 @@ plt.legend(['IMF-2 IP Differential', 'Jump threshold'], loc='upper right')
 # process takes the cycles detected by the phase jumps and runs four
 # additional checks.
 #
-# We define a 'good' cycle as one with
-# 1 : A strictly positively increasing phase
-# 2 : A phase starting within phase_step of zero (ie 0 < x < phase_step)
-# 3 : A phase ending within phase_step of 2pi (is 2pi-phase_step < x < 2pi)
-# 4 : A set of 4 unique control points
-#        (ascending zero, peak, descending zero & trough)
+# We define a 'good' cycle as one with:
+#
+# 1. A strictly positively increasing phase
+# 2. A phase starting within phase_step of zero ie the lowest value of IP must be less than phase_step
+# 3. A phase ending within phase_step of 2pi the highest value of IP must be between 2pi and 2pi-phase_step
+# 4. A set of 4 unique control points (ascending zero, peak, descending zero & trough)
 #
 # Lets take a look at these checks in IMF-2. Firstly, we run test 1:
 
@@ -148,8 +148,8 @@ plt.legend(['IMF-2 Instantaneous Phase Differential'])
 
 #%%
 # We can see that the instantaneous phase of most cycles is positive throughout
-# the cycle. Only one cycle (around 1 second into the simulation) has negative
-# values which correspond to a reversal in the normal wrapped IP.
+# the cycle. Only one cycle (around 1.6 seconds into the simulation) has
+# negative values which correspond to a reversal in the normal wrapped IP.
 #
 # The second test looks to make sure that each cycles phase covers the whole
 # 2pi range. If the phase  doesn't reach these limits it indicates that a phase
@@ -185,7 +185,7 @@ markers = ['og', '^b', 'oc', 'vb', 'or']
 label = ['Asc-Start', 'Peak', 'Desc', 'Trough', 'Asc-End']
 
 # Plot the first 10 cycles with control points
-ncycles = 20
+ncycles = 21
 start = 0
 
 plt.figure()
@@ -206,7 +206,7 @@ for ii in range(1, ncycles):
 
 #%%
 # Most of these cycles have the full set of control points present. Only ones
-# cycle (cycle-11 - around half way through) is missing an indicator for its
+# cycle (cycle-20 - close to the end) is missing an indicator for its
 # peak or trough. This is as a distortion in the cycle means that there are two
 # peaks and troughs present. In this case, ``get_control_points`` will return a
 # ``np.nan`` as the value for that peak.
@@ -262,7 +262,7 @@ for ii in range(all_cycles.shape[1]):
 #%%
 # IMF-2 contains our simulated oscillation with a spectral peak around 12Hz.
 # As we would expect, the cycle detection finds around 120-130 cycles in this
-# 10 second segment. Most of these cycles (around 88%) pass our cycle-quality checks
+# 10 second segment. Most of these cycles (94.4%) pass our cycle-quality checks
 # indicating that they have well behaved instantaneous phase profiles that can
 # be interpreted in detail.
 #

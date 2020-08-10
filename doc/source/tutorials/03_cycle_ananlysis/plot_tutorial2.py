@@ -83,7 +83,7 @@ mask_cycles = emd.cycles.get_cycle_inds(IP, return_good=True, mask=mask)
 # ``emd.cycles.get_cycle_stat`` function. This is a simple helper function
 # which takes in a set of cycle timings (the output from
 # ``emd.cycles.get_cycle_inds``) and any time-series of interest (such as
-# instaneous aamplitude or frequency). The function then computes a metric from
+# instaneous amplitude or frequency). The function then computes a metric from
 # the time-series within each cycle.
 #
 # The computed metric is defined by the ``func`` argument, this can be any

@@ -125,8 +125,8 @@ IP_nonlinear, IF_nonlinear, IA_nonlinear = emd.spectra.frequency_stats(imf_nonli
 
 #%%
 # We can now start to look at how a non-sinusoidal waveform is represented in
-# frequency. We will compare the EMD instantnaous frequency perspective with a
-# standard frequency andlysis based on the Fourier transform.
+# frequency. We will compare the EMD instantaneous frequency perspective with a
+# standard frequency analysis based on the Fourier transform.
 #
 # We compute the Hilbert-Huang transform from the IMF frequency metrics and
 # Welch's Periodogram from the raw data before creating a summary plot.
@@ -447,7 +447,7 @@ plt.legend(['Linear System', 'Nonlinear System'])
 
 #%%
 # As with the simple sinusoidal signal in the first section. We see that the
-# non-sinsusoidal waveform introduced by the nonlinear sytemintroduces a
+# non-sinsusoidal waveform introduced by the nonlinear system introduces a
 # harmonic into Welch's Periodogram and widens the 12Hz peak of the
 # Hilbert-Huang transform.
 #
@@ -479,10 +479,17 @@ plt.legend(['Linear System', 'Nonlinear System'])
 # We can try to clean up the analysis by contentrating on oscillatory cycles
 # which have a well formed phase and an amplitude above a specified threshold.
 # We extract these cycles using the ``emd.cycles.get_cycle_inds`` function with
-# a defined mask based on instantanous amplitude.
+# a defined mask based on instantanous amplitude. We apply a mask here as phase
+# estimates, and therefore instantaneous frequency estimates, can be very noisy
+# in very low power signals - including the very low amplitude cycles we could
+# get noisy frequency jumps which will distort our average. This mask removes
+# around 20% of the cycles with the vary lowest amplitudes to avoid this noise.
 
-cycles_linear = emd.cycles.get_cycle_inds(IP_linear, return_good=True, mask=IA_linear[:, 2] > .05)
-cycles_nonlinear = emd.cycles.get_cycle_inds(IP_nonlinear, return_good=True, mask=IA_nonlinear[:, 2] > .05)
+mask = IA_linear[:, 2] > .05
+cycles_linear = emd.cycles.get_cycle_inds(IP_linear, return_good=True, mask=mask)
+
+mask = IA_nonlinear[:, 2] > .05
+cycles_nonlinear = emd.cycles.get_cycle_inds(IP_nonlinear, return_good=True, mask=mask)
 
 #%%
 # Next we extract the per-cycle IMF and instantaneous frequencies for both
