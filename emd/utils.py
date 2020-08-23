@@ -305,4 +305,3 @@ def wrap_phase(IP, ncycles=1, mode='2pi'):
         phases = (IP + (np.pi * ncycles)) % (ncycles * 2 * np.pi) - (np.pi * ncycles)
 
     return phases
-<<<<<<< Updated upstream
