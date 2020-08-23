@@ -15,7 +15,7 @@ def get_install_dir():
 
 
 def get_installed_version():
-    """Read version of currently installed & imported emd accoording to
+    """Read version of currently installed & imported emd according to
     setup.py. If a user has made local changes this version may not be exactly
     the same as the online package."""
     return pkg_resources.require("emd")[0].version
