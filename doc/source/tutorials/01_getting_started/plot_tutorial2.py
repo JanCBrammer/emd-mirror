@@ -26,9 +26,11 @@ nonlinearity_deg = .25
 # Change left-right skew of deformation [-pi to pi]
 nonlinearity_phi = -np.pi/4
 
-# Compute the signal
+# Create a non-linear oscillation
 x = emd.utils.abreu2010(freq, nonlinearity_deg, nonlinearity_phi, sample_rate, seconds)
-x += np.cos(2*np.pi*1*time_vect)
+
+x += np.cos(2 * np.pi * 1 * time_vect)        # Add a simple 1Hz sinusoid
+x -= np.sin(2 * np.pi * 2.2e-1 * time_vect)   # Add part of a very slow cycle as a trend
 
 
 #%%
@@ -246,29 +248,34 @@ config['imf_opts/sd_thresh'] = 0.05
 # Extract the options for get_next_imf
 imf_opts = config['imf_opts']
 
-imf1, continue_sift = emd.sift.get_next_imf(x[:, None], **imf_opts)
-print(imf1.shape)
-imf2, continue_sift = emd.sift.get_next_imf(x[:, None]-imf1, **imf_opts)
+imf1, continue_sift = emd.sift.get_next_imf(x[:, None],           **imf_opts)
+imf2, continue_sift = emd.sift.get_next_imf(x[:, None]-imf1,      **imf_opts)
+imf3, continue_sift = emd.sift.get_next_imf(x[:, None]-imf1-imf2, **imf_opts)
 
 plt.figure(figsize=(12, 12))
-plt.subplot(411)
+plt.subplot(511)
 plt.plot(x, 'k')
-plt.ylim(-3, 3)
+plt.ylim(-4, 4)
 plt.title('Original Signal')
 
-plt.subplot(412)
+plt.subplot(512)
 plt.plot(imf1, 'k')
-plt.ylim(-3, 3)
+plt.ylim(-4, 4)
 plt.title('IMF1')
 
-plt.subplot(413)
+plt.subplot(513)
 plt.plot(imf2, 'k')
-plt.ylim(-3, 3)
+plt.ylim(-4, 4)
 plt.title('IMF2')
 
-plt.subplot(414)
-plt.plot(x[:, None]-imf1-imf2, 'k')
-plt.ylim(-3, 3)
+plt.subplot(514)
+plt.plot(imf3, 'k')
+plt.ylim(-4, 4)
+plt.title('IMF2')
+
+plt.subplot(515)
+plt.plot(x[:, None]-imf1-imf2-imf3, 'k')
+plt.ylim(-4, 4)
 plt.title('Residual')
 
 #%%
