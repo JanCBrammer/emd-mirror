@@ -528,7 +528,8 @@ def hilberthuang(infr, inam, freq_edges, mode='energy', return_sparse=False):
         inam = inam**2
 
     # Create sparse co-ordinates
-    yinds = np.digitize(infr, freq_edges)
+    yinds = np.digitize(infr, freq_edges) - 1
+    yinds[yinds < 0] = 0
     xinds = np.tile(np.arange(yinds.shape[0]), (yinds.shape[1], 1)).T
 
     coo_data = (inam.reshape(-1), (yinds.reshape(-1), xinds.reshape(-1)))
