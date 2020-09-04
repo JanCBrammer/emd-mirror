@@ -259,7 +259,7 @@ plt.ylabel('Frequency (Hz)')
 # Carrier frequency histogram definition
 freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 25, 24*3, 'linear')
 
-hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
+hht = emd.spectra.hilberthuang(IF[:, 2], IA[:, 2], freq_edges, mode='amplitude')
 time_centres = np.arange(201)-.5
 
 # Create summary figure
@@ -302,7 +302,7 @@ plt.ylabel('Frequency (Hz)')
 # Carrier frequency histogram definition
 freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 25, 24, 'log')
 
-hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
+hht = emd.spectra.hilberthuang(IF[:, 2], IA[:, 2], freq_edges, mode='amplitude')
 time_centres = np.arange(201)-.5
 
 plt.figure(figsize=(10, 6))
@@ -340,7 +340,7 @@ plt.ylabel('Frequency (Hz)')
 # Carrier frequency histogram definition
 freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 25, 24*3, 'linear')
 
-hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
+hht = emd.spectra.hilberthuang(IF[:, 2], IA[:, 2], freq_edges, mode='amplitude')
 time_centres = np.arange(2051)-.5
 
 plt.figure(figsize=(10, 8))
@@ -389,7 +389,7 @@ plt.gca().add_patch(rect)
 # Carrier frequency histogram definition
 freq_edges, freq_centres = emd.spectra.define_hist_bins(1, 25, 24*3, 'linear')
 
-hht = emd.spectra.hilberthuang(IF[:, 2, None], IA[:, 2, None], freq_edges, mode='amplitude')
+hht = emd.spectra.hilberthuang(IF[:, 2], IA[:, 2], freq_edges, mode='amplitude')
 time_centres = np.arange(2051)-.5
 
 # Apply smoothing

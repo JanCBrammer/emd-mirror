@@ -517,6 +517,12 @@ def hilberthuang(infr, inam, freq_edges, mode='energy', return_sparse=False):
 
     """
 
+    if infr.ndim == 1:
+        infr = infr[:, np.newaxis]
+
+    if inam.ndim == 1:
+        inam = inam[:, np.newaxis]
+
     logger.info('STARTED: compute Hilbert-Huang Transform')
     logger.debug('computing on {0} samples over {1} IMFs '.format(infr.shape[0],
                                                                   infr.shape[1]))
