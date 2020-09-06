@@ -19,7 +19,7 @@ EMD can be install from `PyPI <https://pypi.org/project/emd/>`_ using pip::
 
 pip will install the latest version of EMD from PyPI alongside any missing dependencies into the current python environment. You can install a specific version by specifying the version number.::
 
-    pip install emd==0.3.00
+    pip install emd==0.3.0
 
 ...from conda
 """""""""""""
@@ -33,7 +33,9 @@ If you want to create a conda environment containing EMD, you can use the follow
        - pip:
          - emd
 
-you can find a copy of this file `HERE <https://gitlab.com/emd-dev/emd/-/blob/master/envs/emd_conda_env.yml>`_. You can download the config and install the enviromnent by changing directory to the install location and calling these commands.::
+This environment can be customised to include any other packages that you might be working with. The last two lines can also be added to an existing conda environment configuration file to include emd in that env.
+
+This env can be downloaded `HERE <https://gitlab.com/emd-dev/emd/-/blob/master/envs/emd_conda_env.yml>`_. You can download the config and install the enviromnent by changing directory to the install location and calling these commands.::
 
     curl https://gitlab.com/emd-dev/emd/-/raw/master/envs/emd_conda_env.yml > emd_conda_env.yml
     conda env create -f emd_conda_env.yml
@@ -41,9 +43,6 @@ you can find a copy of this file `HERE <https://gitlab.com/emd-dev/emd/-/blob/ma
 this will automatically install the required dependancies alongside EMD. The environment can then be activated by calling::
 
     source activate emd
-
-This environment can be customised to include any other packages that you might be working with. Similarly the lat two lines can be added to an existing conda environment configuration file to add EMD to an existing env.
-
 
 
 Development gitlab version
@@ -66,10 +65,14 @@ A conda environment config file can be specified pointing at the development ver
        - pip:
          - git+https://gitlab.com/emd-dev/emd.git
 
-you can find a copy of this file `HERE <https://gitlab.com/emd-dev/emd/-/blob/master/envs/emd-dev_conda_env.yml>`_. You can download the config and install the enviromnent by changing directory to the install location and calling these commands.::
+The env can be downloaded `HERE <https://gitlab.com/emd-dev/emd/-/blob/master/envs/emd-dev_conda_env.yml>`_. You can download the config and install the enviromnent by changing directory to the install location and calling these commands.::
 
     curl https://gitlab.com/emd-dev/emd/-/raw/master/envs/emd-dev_conda_env.yml > emd-dev_conda_env.yml
     conda env create -f emd-dev_conda_env.yml
+
+this will automatically install the required dependancies alongside EMD. The environment can then be activated by calling::
+
+    source activate emd-dev
 
 
 ...from source (unix)
