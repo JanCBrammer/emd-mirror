@@ -1164,8 +1164,8 @@ def get_padded_extrema(X, pad_width=2, combined_upper_lower=False,
     else:
         max_locs, max_pks = _find_extrema(X, parabolic_extrema=parabolic_extrema)
 
-    # Return nothing we don't have enough extrema
-    if (max_locs is None) or (max_locs.size <= 1):
+    # Return nothing if we don't have enough extrema
+    if (len(max_locs) == 0) or (max_locs.size <= 1):
         return None, None
 
     # Determine how much padding to use
@@ -1219,7 +1219,7 @@ def _find_extrema(X, peak_prom_thresh=None, parabolic_extrema=False):
     ext_locs = signal.argrelextrema(X, np.greater, order=1)[0]
 
     if len(ext_locs) == 0:
-        return None, None
+        return [], []
 
     if peak_prom_thresh is not None:
         prom, _, _ = signal._peak_finding.peak_prominences(X, ext_locs, wlen=3)
