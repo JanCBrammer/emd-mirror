@@ -1120,25 +1120,32 @@ def sift_second_layer(IA, sift_func=sift, sift_args=None):
 # SIFT Estimation Utilities
 
 
-def get_padded_extrema(X, pad_width=2, combined_upper_lower=False,
-                       loc_pad_opts={}, mag_pad_opts={}, parabolic_extrema=False):
+def get_padded_extrema(X, pad_width=2, mode='peaks', parabolic_extrema=False,
+                       loc_pad_opts={}, mag_pad_opts={}):
     """
     Return a set of extrema from a signal including padded extrema at the edges
-    of the signal.
+    of the signal. Padding is carried out using numpy.pad and the
 
     Parameters
     ----------
     X : ndarray
         Input signal
-    combined_upper_lower : bool
-         Flag to indicate whether both upper and lower extrema should be
-         considered (Default value = False)
+    pad_width : int >= 0
+        Number of additional extrema to add to the start and end
+    ext_mode : {'peaks', 'troughs', 'abs_peaks'}
+        Switch between detecting peaks, troughs or peaks in the abs signal
+    parabolic_extrema : bool
+        Flag indicating whether extrema positions should be refined by parabolic interpolation
+    loc_pad_opts : dict
+        Optional dictionary of options to be passed to np.pad when padding extrema locations
+    mag_pad_opts : dict
+        Optional dictionary of options to be passed to np.pad when padding extrema magnitudes
 
     Returns
     -------
-    max_locs : ndarray
+    locs : ndarray
         location of extrema in samples
-    max_pks : ndarray
+    mags : ndarray
         Magnitude of each extrema
 
 
@@ -1159,10 +1166,15 @@ def get_padded_extrema(X, pad_width=2, combined_upper_lower=False,
     if X.ndim == 2:
         X = X[:, 0]
 
-    if combined_upper_lower:
-        max_locs, max_pks = _find_extrema(np.abs(X), parabolic_extrema=parabolic_extrema)
+    if mode == 'peaks':
+        max_locs, max_ext = _find_extrema(X, parabolic_extrema=parabolic_extrema)
+    elif mode == 'troughs':
+        max_locs, max_ext = _find_extrema(-X, parabolic_extrema=parabolic_extrema)
+        max_ext = -max_ext
+    elif mode == 'abs_peaks':
+        max_locs, max_ext = _find_extrema(np.abs(X), parabolic_extrema=parabolic_extrema)
     else:
-        max_locs, max_pks = _find_extrema(X, parabolic_extrema=parabolic_extrema)
+        raise ValueError('Mode {0} not recognised by get_padded_extrema'.format(mode))
 
     # Return nothing if we don't have enough extrema
     if (len(max_locs) == 0) or (max_locs.size <= 1):
@@ -1174,20 +1186,20 @@ def get_padded_extrema(X, pad_width=2, combined_upper_lower=False,
 
     # Return now if we're not padding
     if (pad_width is None) or (pad_width == 0):
-        return max_locs, max_pks
+        return max_locs, max_ext
 
     # Pad peak locations
     ret_max_locs = np.pad(max_locs, pad_width, loc_pad_mode, **loc_pad_opts)
 
     # Pad peak magnitudes
-    ret_max_pks = np.pad(max_pks, pad_width, mag_pad_mode, **mag_pad_opts)
+    ret_max_ext = np.pad(max_ext, pad_width, mag_pad_mode, **mag_pad_opts)
 
     # Keep padding if the locations don't stretch to the edge
     while max(ret_max_locs) < len(X) or min(ret_max_locs) >= 0:
         ret_max_locs = np.pad(ret_max_locs, pad_width, loc_pad_mode, **loc_pad_opts)
-        ret_max_pks = np.pad(ret_max_pks, pad_width, mag_pad_mode, **mag_pad_opts)
+        ret_max_ext = np.pad(ret_max_ext, pad_width, mag_pad_mode, **mag_pad_opts)
 
-    return ret_max_locs, ret_max_pks
+    return ret_max_locs, ret_max_ext
 
 
 def _find_extrema(X, peak_prom_thresh=None, parabolic_extrema=False):
@@ -1219,7 +1231,7 @@ def _find_extrema(X, peak_prom_thresh=None, parabolic_extrema=False):
     ext_locs = signal.argrelextrema(X, np.greater, order=1)[0]
 
     if len(ext_locs) == 0:
-        return [], []
+        return np.array([]), np.array([])
 
     if peak_prom_thresh is not None:
         prom, _, _ = signal._peak_finding.peak_prominences(X, ext_locs, wlen=3)
@@ -1309,11 +1321,11 @@ def interp_envelope(X, mode='upper', interp_method='splrep', extrema_opts={},
         raise ValueError("Invalid interp_method value")
 
     if mode == 'upper':
-        locs, pks = get_padded_extrema(X, combined_upper_lower=False, **extrema_opts)
+        locs, pks = get_padded_extrema(X, mode='peaks', **extrema_opts)
     elif mode == 'lower':
-        locs, pks = get_padded_extrema(-X, combined_upper_lower=False, **extrema_opts)
+        locs, pks = get_padded_extrema(X, mode='troughs', **extrema_opts)
     elif mode == 'combined':
-        locs, pks = get_padded_extrema(X, combined_upper_lower=True, **extrema_opts)
+        locs, pks = get_padded_extrema(X, mode='abs_peaks', **extrema_opts)
     else:
         raise ValueError('Mode not recognised. Use mode= \'upper\'|\'lower\'|\'combined\'')
 
@@ -1340,10 +1352,6 @@ def interp_envelope(X, mode='upper', interp_method='splrep', extrema_opts={},
     if env.shape[0] != X.shape[0]:
         raise ValueError('Envelope length does not match input data {0} {1}'.format(
             env.shape[0], X.shape[0]))
-
-    if mode == 'lower':
-        env = -env
-        pks = -pks
 
     if ret_extrema:
         return env, (locs, pks)
@@ -1561,7 +1569,7 @@ def get_config(siftname='sift'):
     # Get defaults for extrema detection and padding
     extrema_opts = _get_function_opts(get_padded_extrema, ignore=['X', 'mag_pad_opts',
                                                                   'loc_pad_opts',
-                                                                  'combined_upper_lower'])
+                                                                  'mode'])
 
     # Get defaults for envelope interpolation
     envelope_opts = _get_function_opts(interp_envelope, ignore=['X', 'extrema_opts', 'mode', 'ret_extrema'])
