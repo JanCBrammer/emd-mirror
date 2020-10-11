@@ -1,5 +1,5 @@
 ---
-title: 'EMD: Empirical Mode Decomposition, Hilbert-Huang Transform and Holospectrum analyses in Python.
+title: 'EMD: Empirical Mode Decomposition, Hilbert-Huang Transform and Holospectrum analyses in Python'
 tags:
   - Python
   - Time-series
@@ -103,8 +103,8 @@ are two substantial EMD implementations available on the PyPI server.
 [PyEMD](https://pyemd.readthedocs.io/en/latest/) and
 [PyHHT](https://pyhht.readthedocs.io/en/latest/). Each of these packages
 implements a family of sifting routines and frequency transforms.  Another
-implementation of EMD in Matlab and C++ is available from [Flandarin &
-Rilling](http://perso.ens-lyon.fr/patrick.flandrin/emd.html). This provides a
+implementation of EMD in Matlab and C++ is available from [Patrick
+Flandarin](http://perso.ens-lyon.fr/patrick.flandrin/emd.html). This provides a
 wide range of sift functions but limited frequency transform or spectrum
 computations. Finally, the basic EMD algorithm and HHT is implemented in
 versions of the [MatLab signal processing
@@ -121,9 +121,9 @@ instructions on
 [installation](https://emd.readthedocs.io/en/latest/install.html) and a range
 of practical
 [tutorials](https://emd.readthedocs.io/en/latest/emd_tutorials/index.html).
-Finally, users wishing to contribute bug reports or code patches are able to do
-so on our gitlab page following the instructions here
-([Contribute](https://emd.readthedocs.io/en/latest/contributing.html)).
+Finally, users wishing to submit bug reports or code patches are able to do so
+on our gitlab page following our [contribution
+instructions](https://emd.readthedocs.io/en/latest/contributing.html).
 
 
 # Acknowledgements
