@@ -20,17 +20,18 @@ bibliography: paper.bib
 The Empirical Mode Decomposition ([EMD](https://emd.readthedocs.io/en/latest/))
 package contains Python (>3.5) functions for analysis of non-linear and
 non-stationary oscillatory time series. `EMD` implements a family of sifting
-agorithms, instantaneous frequency transformations, power spectrum construction
+algorithms, instantaneous frequency transformations, power spectrum construction
 and single-cycle feature extraction. Many natural signals contain non-linear or
 non-sinusoidal features that change dynamically over time. These complex and
 dynamic features are often of analytic interest but can confound standard
-analyses such as the Fourier trasnform that assume linear and stationary
+analyses such as the Fourier transform that assume linear and stationary
 signals. The Empirical Mode Decomposition is defined by the sift-algorithm; a
 data-adaptive decomposition technique that separates a signal into a set of
-physically intpretable Intrinsic Mode Functions (IMFs) that permit well behaved
-Hilbert transforms [@Huang1998]. Crucially, this decomposition work on the
-local features of the dataset and therefore the IMFs can retain the non-linear
-and non-stationary characteristics of the signal.
+physically interpretable Intrinsic Mode Functions (IMFs) that permit well behaved
+Hilbert transforms [@Huang1998]. Crucially, the decomposition works on
+adaptive, local segments of the data rather than assuming that features are
+consistent across the whole dataset. Therefore, the IMFs are able to retain the
+non-linear and non-stationary characteristics of the signal.
 
 # Package Features
 
@@ -51,7 +52,7 @@ The Hilbert-transform is used to construct an energy-frequency or
 energy-frequency-time spectrum known as the Hilbert-Huang Transform (HHT). A
 second level decomposition of the amplitude modulations of each IMF extends the
 HHT to the Holospectrum describing signal energy across carrier frequency,
-amplitude modulation frequency and time. The frequency transforms are
+amplitude modulation frequency and time [@Huang2016]. The frequency transforms are
 implemented in the `emd.spectra` submodule. `emd.spectra.frequency_stats`
 implements a set of methods for computing instantaneous frequency, phase and
 amplitude from a set of IMFs. These can be used as inputs to the
@@ -72,8 +73,8 @@ Firstly, an easy to use and customisable logger (implemented in `emd.logger`)
 is threaded throughout the toolbox to provide progress output about ongoing
 computations, warnings and errors. The logger output may be augmented by the
 user and any output can be directed to a specified log file in addition to the
-console. Secondly, `EMD` is supported by a range of tests implmemented in the
-`py.test` framework. These include both routine useage tests and tests ensuring
+console. Secondly, `EMD` is supported by a range of tests implemented in the
+`py.test` framework. These include both routine usage tests and tests ensuring
 that the behaviour of the sift routines meet a set of pre-specified
 requirements. Finally, `emd.support` contains a set of functions for running
 tests and checking which versions of `EMD` are currently installed and whether
@@ -93,7 +94,7 @@ and applicable to any time-series.
 # State of the field
 
 The popularity of the EMD algorithm has lead to several existing
-implementations. Here, we include an imcomplete list of these toolboxes. In
+implementations. Here, we include an incomplete list of these toolboxes. In
 Python, there are two substantial EMD implementations available on the PyPI
 server. [PyEMD](https://pyemd.readthedocs.io/en/latest/) and
 [PyHHT](https://pyhht.readthedocs.io/en/latest/). Each of these packages
@@ -118,14 +119,9 @@ Finally, users wishing to submit bug reports or merge-requests are able to do
 so on our gitlab page following our [contribution
 guidelines](https://emd.readthedocs.io/en/latest/contributing.html).
 
-
 # Acknowledgements
 
-We would like to extend our sincere thanks to Norden E. Huang, Wei-Kuang Liang,
-Jia-Rong Yeh, Chi-Hung Juan, Vitor Lopes-dos-Santos and David Dupret for
-fruitful and enjoyable discussions on EMD methododology. We would also like to
-thank Vitor Lopes-dos-Santos, Jasper Hajonides van der Meulen and Irene
-Echeverria-Altuna for their time, patience and feedback on early versions of
-this toolbox.
+We would like to Jasper Hajonides van der Meulen and Irene Echeverria-Altuna
+for their time, patience and feedback on early versions of this toolbox.
 
 # References
