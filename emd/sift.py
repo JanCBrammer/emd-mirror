@@ -763,7 +763,7 @@ def mask_sift(X, mask_amp=1, mask_amp_mode='ratio_imf',
 
         logger.info('Sift IMF-{0} with mask-freq {1} and amp {2}'.format(imf_layer, mask_freqs[imf_layer], amp))
 
-        next_imf, continute_sift = get_next_imf_mask(proto_imf, mask_freqs[imf_layer], amp,
+        next_imf, continue_sift = get_next_imf_mask(proto_imf, mask_freqs[imf_layer], amp,
                                                      nphases=nphases,
                                                      nprocesses=nprocesses,
                                                      imf_opts=imf_opts,
