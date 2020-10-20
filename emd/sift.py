@@ -567,6 +567,8 @@ def get_next_imf_mask(X, z, amp, nphases=4, nprocesses=1,
 
     X = ensure_1d_with_singleton([X], ['X'], 'get_next_imf_mask')
 
+    logger.info("Defining {0} masks with freq {1} and amp {2}".format(nphases, z, amp))
+
     # Create normalised freq
     zf = z * 2 * np.pi
     # Create time matrix including mask phase-shifts
@@ -761,7 +763,7 @@ def mask_sift(X, mask_amp=1, mask_amp_mode='ratio_imf',
             # Should be array_like if not a single number
             amp = mask_amp[imf_layer] * sd
 
-        logger.info('Sift IMF-{0} with mask-freq {1} and amp {2}'.format(imf_layer, mask_freqs[imf_layer], amp))
+        logger.info('Sifting IMF-{0}'.format(imf_layer))
 
         next_imf, continue_sift = get_next_imf_mask(proto_imf, mask_freqs[imf_layer], amp,
                                                      nphases=nphases,
