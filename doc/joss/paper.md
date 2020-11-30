@@ -1,5 +1,5 @@
 ---
-title: "EMD: Empirical Mode Decomposition and Hilbert-Huang Spectral Analyses implemented in Python"
+title: "EMD: Empirical Mode Decomposition and Hilbert-Huang Spectral Analyses in Python"
 tags:
   - Python
   - Time-series
