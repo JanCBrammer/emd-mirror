@@ -3,18 +3,34 @@
 # vim: set expandtab ts=4 sw=4:
 
 """
-Implementations of the SIFT algorithm for Empirical Mode Decomposition.
+Implementations of the sift algorithm for Empirical Mode Decomposition.
 
-Routines:
+Main Routines:
+  sift                    - The classic sift algorithm
+  ensemble_sift           - Noise-assisted sift algorithm
+  complete_ensemble_sift  - Adapeted noise-assisted sift algorithm
+  mask_sift               - Sift with masks to separate very sparse or nonlinear components
+  sift_second_layer       - Apply sift to amplitude envlope of a set of IMFs
 
-sift
-ensemble_sift
-complete_ensemble_sift
-sift_second_layer
-mask_sift_adaptive
-mask_sift_specified
-get_next_imf
-get_next_imf_mask
+Sift Helper Routines:
+  get_next_imf
+  get_next_imf_mask
+  get_mask_freqs
+  energy_difference
+  energy_stop
+  sd_stop
+  rilling_stop
+  fixed_stop
+  get_padded_extrema
+  compute_parabolic_extrema
+  interp_envelope
+  zero_crossing_count
+  is_imf
+
+Sift Config:
+  get_config
+  SiftConfig
+
 
 """
 
